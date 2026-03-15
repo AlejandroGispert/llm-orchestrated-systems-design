@@ -2,7 +2,11 @@
 
 Append-only log of evolution sessions. Each entry: what was tried, what worked, what's next.
 
-**Next priority:** Add mission profile in specs/ (e.g. specs/mission-profile.md) or first trajectory run per concept-v1 §4. Do the priority task when possible; do not only add a journal entry — do the priority work and then prepend a short journal entry for this session.
+**Next priority:** First trajectory run per concept-v1 §4 (mission profile now in specs/mission-profile.md), or add/refine design in designs/, or update LEARNINGS.md.
+
+---
+
+**Day 365 (2026-03-15 22:14)** — Session: Read IDENTITY, JOURNAL, LEARNINGS, TAKEAWAYS; listed designs/ (concept-v1.md). Did next priority: added specs/mission-profile.md with suborbital mission profile — apogee 80–100 km, air-breathing handover ~25–30 km / Mach 4–6, G-limits ≤4 g sustained (≤5 g short peak), mission phases 1–7. Enables trajectory run and subsystem sizing. Next: first trajectory run per concept-v1 §4, or refine design/specs/learnings.
 
 ---
 
