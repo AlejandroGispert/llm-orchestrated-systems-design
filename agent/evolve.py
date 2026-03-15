@@ -1,6 +1,8 @@
 """
 Design agent — one evolution cycle.
 LangGraph-based: plan → implement → journal → commit.
+
+LLM: set LLM_PROVIDER=ollama to use local Ollama (free); otherwise uses Anthropic.
 """
 from __future__ import annotations
 
@@ -10,15 +12,35 @@ import subprocess
 import sys
 from pathlib import Path
 
-# LangGraph + Anthropic
-from langchain_anthropic import ChatAnthropic
 from langgraph.graph import StateGraph, END
 from langgraph.prebuilt import ToolNode
 from langchain_core.messages import HumanMessage, SystemMessage
 from langchain_core.tools import tool
 
-
 REPO_ROOT = Path(__file__).resolve().parents[1]
+
+
+def _get_llm(tools: list):
+    """Return LLM with tools bound. Uses Ollama if LLM_PROVIDER=ollama else Anthropic."""
+    provider = (os.environ.get("LLM_PROVIDER") or "").strip().lower()
+    if provider == "ollama":
+        try:
+            from langchain_ollama import ChatOllama
+        except ImportError:
+            print("Error: LLM_PROVIDER=ollama requires langchain-ollama. Run: pip install langchain-ollama", file=sys.stderr)
+            sys.exit(1)
+        model_name = os.environ.get("OLLAMA_MODEL", "llama3.1")
+        return ChatOllama(model=model_name).bind_tools(tools)
+    # Default: Anthropic
+    api_key = os.environ.get("ANTHROPIC_API_KEY")
+    if not api_key:
+        print("Error: ANTHROPIC_API_KEY required (or set LLM_PROVIDER=ollama for local Ollama)", file=sys.stderr)
+        sys.exit(1)
+    from langchain_anthropic import ChatAnthropic
+    return ChatAnthropic(
+        model="claude-sonnet-4-20250514",
+        api_key=api_key,
+    ).bind_tools(tools)
 
 
 # ── Tools the agent can use ──
@@ -61,10 +83,7 @@ def run_bash(command: str) -> str:
 # ── Graph state ──
 def create_graph(day: int, date: str, time: str) -> StateGraph:
     tools = [read_file, write_file, run_bash]
-    model = ChatAnthropic(
-        model="claude-sonnet-4-20250514",
-        api_key=os.environ.get("ANTHROPIC_API_KEY"),
-    ).bind_tools(tools)
+    model = _get_llm(tools)
 
     def build_system_prompt(state: dict) -> str:
         docs = REPO_ROOT / "docs"
@@ -149,8 +168,8 @@ def main():
     parser.add_argument("--time", required=True)
     args = parser.parse_args()
 
-    if not os.environ.get("ANTHROPIC_API_KEY"):
-        print("Error: ANTHROPIC_API_KEY required", file=sys.stderr)
+    if not os.environ.get("ANTHROPIC_API_KEY") and (os.environ.get("LLM_PROVIDER") or "").strip().lower() != "ollama":
+        print("Error: ANTHROPIC_API_KEY required (or set LLM_PROVIDER=ollama for local Ollama)", file=sys.stderr)
         sys.exit(1)
 
     graph = create_graph(args.day, args.date, args.time)

@@ -3,10 +3,13 @@
 # Runs every 4–8 hours via GitHub Actions or manually.
 #
 # Usage:
-#   ANTHROPIC_API_KEY=sk-... ./scripts/evolve.sh
+#   ANTHROPIC_API_KEY=sk-... ./scripts/evolve.sh   # cloud (paid)
+#   LLM_PROVIDER=ollama ./scripts/evolve.sh        # local Ollama (free)
 #
 # Environment:
-#   ANTHROPIC_API_KEY  — required
+#   ANTHROPIC_API_KEY  — required if not using Ollama
+#   LLM_PROVIDER       — set to "ollama" for local/free LLM (no API key needed)
+#   OLLAMA_MODEL       — optional; default llama3.1 (only if LLM_PROVIDER=ollama)
 #   REPO               — GitHub repo (e.g. owner/llm-orchestrated-systems-design)
 #   GH_TOKEN           — for gh CLI (issues, push)
 

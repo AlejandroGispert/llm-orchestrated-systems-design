@@ -48,20 +48,90 @@ Create empty dirs if missing:
 mkdir -p designs simulations specs skills
 ```
 
-### 3. GitHub Secrets
+### 3. GitHub Secrets (only if using GitHub Actions)
 
 In repo **Settings → Secrets and variables → Actions**, add:
 
 | Secret | Required | Purpose |
 |--------|----------|---------|
-| `ANTHROPIC_API_KEY` | Yes | LLM API for the agent |
+| `ANTHROPIC_API_KEY` | Yes (if using Actions) | LLM API for the agent |
 | `GITHUB_TOKEN` | Auto | Push and issues (provided by Actions) |
 
 ### 4. Manual Run (local)
 
+**With Anthropic (paid):**
 ```bash
 ANTHROPIC_API_KEY=sk-... ./scripts/evolve.sh
 ```
+
+**With Ollama (free, no API key):**
+```bash
+# Install Ollama from https://ollama.com, then: ollama pull llama3.1
+LLM_PROVIDER=ollama ./scripts/evolve.sh
+```
+
+### 5. Local cron + Ollama (no Anthropic)
+
+Run the evolution script every 4 hours on your Mac, using local Ollama — no cloud API, no cost.
+
+1. **Install Ollama** and pull a model:
+   ```bash
+   # From https://ollama.com
+   ollama pull llama3.1
+   ```
+
+2. **Create a small wrapper** (so cron has the right env and cwd), e.g. `scripts/run-evolve-cron.sh`:
+   ```bash
+   #!/bin/bash
+   cd /Users/you/Documents/1_CODE_PROJECTS/llm-orchestrated-systems-design
+   export LLM_PROVIDER=ollama
+   # Optional: export GH_TOKEN=... and REPO=owner/repo to push after each run
+   ./scripts/evolve.sh >> /tmp/evolve.log 2>&1
+   ```
+   Make it executable: `chmod +x scripts/run-evolve-cron.sh`.
+
+3. **Add a crontab entry** (every 4 hours):
+   ```bash
+   crontab -e
+   ```
+   Add:
+   ```cron
+   0 */4 * * * /Users/you/Documents/1_CODE_PROJECTS/llm-orchestrated-systems-design/scripts/run-evolve-cron.sh
+   ```
+   Use your real path and ensure the script is executable.
+
+Your Mac must be on and Ollama running (or start Ollama in the wrapper) for the agent to run.
+
+### 6. Cursor CLI (headless) — use Cursor’s agent on a schedule (no Anthropic key)
+
+Run the evolution every 4 hours using **Cursor’s built-in agent** from the CLI. Uses your Cursor subscription; no separate Anthropic API key.
+
+1. **Install Cursor CLI** (you said you already did):
+   ```bash
+   curl https://cursor.com/install -fsS | bash
+   ```
+   Authenticate so `agent` works. You can put `CURSOR_API_KEY=...` in the repo’s `.env`; both scripts load `.env` automatically (so cron and manual runs get the key). See [Cursor CLI headless docs](https://cursor.com/docs/cli/headless).
+
+2. **Run one evolution manually:**
+   ```bash
+   ./scripts/run-evolve-cursor.sh
+   ```
+   This runs `agent -p --force` with a prompt that mirrors the Python agent: read identity/journal/learnings/takeaways, make one improvement, commit.
+
+3. **Schedule every 4 hours with cron:**
+   ```bash
+   chmod +x scripts/run-evolve-cursor.sh scripts/run-evolve-cron.sh
+   crontab -e
+   ```
+   Add (use your real path):
+   ```cron
+   0 */4 * * * /path/to/llm-orchestrated-systems-design/scripts/run-evolve-cron.sh
+   ```
+   Output is appended to `logs/evolve.log`. Optional: set `GH_TOKEN` and `REPO` in crontab (or in the script) to push after each run.
+
+**Antigravity IDE**
+
+[Antigravity IDE](https://antigravityaiide.com/) is Google’s agent-first IDE (Gemini, etc.). Use it interactively for the same “one improvement + journal + commit” workflow. For scheduled runs, use Cursor CLI (above) or the Python agent with Ollama/Anthropic.
 
 ---
 

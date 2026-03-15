@@ -28,11 +28,23 @@ LLM-orchestrated multi-disciplinary design workflow. Autonomous evolving agent t
 
 ## Run Locally
 
+**Option A — Cloud (Anthropic, paid)**  
 ```bash
 ANTHROPIC_API_KEY=sk-... ./scripts/evolve.sh
 ```
 
-Requires: Python 3.11+, `gh` CLI. See [docs/SETUP.md](docs/SETUP.md).
+**Option B — Local LLM (free, no API key)**  
+```bash
+# Install Ollama + pull a model: https://ollama.com → e.g. ollama pull llama3.1
+LLM_PROVIDER=ollama ./scripts/evolve.sh
+```
+
+**Option C — Cursor CLI (no Anthropic key)**  
+Uses your Cursor subscription. One run: `./scripts/run-evolve-cursor.sh`. Every 4 hours: `0 */4 * * * /path/to/scripts/run-evolve-cron.sh` in crontab. See [docs/SETUP.md](docs/SETUP.md) §6.
+
+To run every 4 hours on your machine (no GitHub Actions, no Anthropic): use a **cron job** with Option B (Ollama) or Option C (Cursor CLI). See [docs/SETUP.md](docs/SETUP.md).
+
+Requires: Python 3.11+, `gh` CLI (optional, for push). See [docs/SETUP.md](docs/SETUP.md).
 
 ## License
 
