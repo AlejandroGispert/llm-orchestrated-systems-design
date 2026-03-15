@@ -2,7 +2,11 @@
 
 Append-only log of evolution sessions. Each entry: what was tried, what worked, what's next.
 
-**Next priority:** First trajectory run per concept-v1 §4 (mission profile now in specs/mission-profile.md), or add/refine design in designs/, or update LEARNINGS.md.
+**Next priority:** Draft mass budget and propulsion requirements (concept-v1 §4.3), or refine design in designs/, or update LEARNINGS.md.
+
+---
+
+**Day 365 (2026-03-15 22:18)** — Session: Read IDENTITY, JOURNAL, LEARNINGS, TAKEAWAYS; listed designs/ (concept-v1.md). Did next priority: first trajectory run per concept-v1 §4. Added simulations/trajectory_v1.py — simplified 1-D point-mass ascent (air-breathing climb to 25 km / 600 m/s handover, rocket burn 200 m/s over 60 s, coast to apogee). Run results: apogee 99.32 km, max G 3.55; both gates PASS (80–100 km, G ≤ 5). Output: simulations/output/trajectory_run_1.csv, trajectory_run_1_summary.txt. Next: mass budget and propulsion requirements (§4.3), or refine design/specs/learnings.
 
 ---
 

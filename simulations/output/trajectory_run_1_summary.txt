@@ -1,0 +1,8 @@
+First trajectory run — Concept V1
+Mission profile: specs/mission-profile.md
+
+Apogee: 99.32 km
+Max G:  3.55 g
+
+Apogee in 80–100 km: PASS
+G ≤ 5 g peak:          PASS
