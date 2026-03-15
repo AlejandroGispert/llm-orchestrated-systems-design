@@ -1,6 +1,6 @@
 # Agentic Design Lab
 
-LLM-orchestrated multi-disciplinary design workflow. Autonomous evolving agent that iteratively proposes, simulates, verifies, and documents reusable orbital vehicle concepts. Runs every 4–8 hours via GitHub Actions: reads design state, plans improvements, implements, verifies, and commits.
+LLM-orchestrated multi-disciplinary design workflow. Autonomous evolving agent that iteratively proposes, simulates, verifies, and documents a design concept. Runs every 4–8 hours (GitHub Actions or local cron): reads design state, plans improvements, implements, verifies, and commits.
 
 **Positioning:** Research platform exploring how agentic AI systems can assist early-stage multidisciplinary conceptual design. Closed-loop design → simulate → evaluate → revise.
 
