@@ -16,12 +16,12 @@ LLM-orchestrated multi-disciplinary design workflow. Autonomous evolving agent t
 ├── .github/workflows/evolve.yml   # Scheduled evolution
 ├── scripts/evolve.sh              # Evolution pipeline
 ├── docs/                          # Documentation
-│   ├── IDENTITY.md               # Agent constitution (immutable)
-│   ├── JOURNAL.md                # Session log
-│   ├── LEARNINGS.md              # Design lessons
-│   ├── TAKEAWAYS.md    # Architecture & domain takeaways
-│   ├── SETUP.md                  # Setup & code structure guide
-│   └── IMPLEMENTATION_STEPS.md   # Implementation phases
+│   ├── IDENTITY.md                # Agent constitution (immutable)
+│   ├── JOURNAL.md                 # Session log
+│   ├── LEARNINGS.md               # Design lessons
+│   ├── TAKEAWAYS.md               # Architecture & domain takeaways
+│   ├── SETUP.md                   # Setup & code structure guide
+│   └── IMPLEMENTATION_STEPS.md    # Implementation phases
 ├── designs/                       # Design documents
 └── simulations/                   # Trajectory, structural, thermal scripts
 ```
