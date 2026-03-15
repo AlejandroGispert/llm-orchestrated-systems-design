@@ -121,13 +121,18 @@ Run the evolution every 4 hours using **Cursor’s built-in agent** from the CLI
 3. **Schedule every 4 hours with cron:**
    ```bash
    chmod +x scripts/run-evolve-cursor.sh scripts/run-evolve-cron.sh
-   crontab -e
+   ./scripts/install-cron.sh
    ```
-   Add (use your real path):
-   ```cron
-   0 */4 * * * /path/to/llm-orchestrated-systems-design/scripts/run-evolve-cron.sh
+   That installs the cron entry and creates `logs/evolve.log`. Or add by hand: `crontab -e` and add:
+   `0 */4 * * * /full/path/to/llm-orchestrated-systems-design/scripts/run-evolve-cron.sh`
+
+4. **Verify the cron job:**
+   ```bash
+   crontab -l                    # list your cron entries
+   ./scripts/run-evolve-cron.sh   # run once (same as cron would)
+   tail -50 logs/evolve.log       # check output
    ```
-   Output is appended to `logs/evolve.log`. Optional: set `GH_TOKEN` and `REPO` in crontab (or in the script) to push after each run.
+   If `agent` isn’t found when run from cron, ensure Cursor CLI is on your PATH or add its bin path in `run-evolve-cron.sh` (see `PATH=` at the top of the script).
 
 **Antigravity IDE**
 
