@@ -40,15 +40,15 @@ PROMPT="You are an aerospace conceptual design agent. Today is Day $DAY ($DATE $
 
 Read these files: docs/IDENTITY.md, docs/JOURNAL.md, docs/LEARNINGS.md, docs/TAKEAWAYS.md. List the contents of designs/.
 
-Your task: Make ONE focused improvement. Choose one of:
-- Add or refine a design document in designs/
-- Create designs/concept-v1.md if designs/ is empty
-- Prepend a short entry to docs/JOURNAL.md for this session
-- Update docs/LEARNINGS.md if you learned something
-- Add a requirement or trade in specs/
+Important: In JOURNAL.md there is a \"Next priority\" line at the top. Your job is to do that priority (e.g. add mission profile in specs/, or first trajectory run) and then prepend a short journal entry for this session. Do not only prepend a journal entry — do the stated next priority first, then prepend the journal entry.
+
+Your task: Make ONE focused improvement (design/spec/simulation work), then prepend a short entry to docs/JOURNAL.md for this session. Prefer:
+- The \"Next priority\" from JOURNAL.md (e.g. specs/mission-profile.md, or trajectory run per concept-v1 §4)
+- Or add/refine a design in designs/, or a requirement/trade in specs/, or update LEARNINGS.md
+- Then always prepend a journal entry summarizing what you did and what is next.
 
 Rules:
-- One focused change only.
+- One focused change to design/specs/simulations/learnings, plus one journal entry prepended.
 - Only modify: designs/, simulations/, specs/, docs/JOURNAL.md, docs/LEARNINGS.md.
 - Never modify: docs/IDENTITY.md, .github/, scripts/, agent/.
 - When done, run in the repo root: git add -A && git commit -m 'Day $DAY ($SESSION_TIME): <brief description>'"

@@ -12,12 +12,15 @@ CRON_LINE="0 */4 * * * $CRON_SCRIPT"
 mkdir -p "$REPO_ROOT/logs"
 touch "$REPO_ROOT/logs/evolve.log"
 
-# Add to crontab (keep existing lines)
-if crontab -l 2>/dev/null | grep -Fq "$CRON_SCRIPT"; then
+# Add to crontab (keep existing lines) — use temp file so it works when no crontab exists yet (e.g. macOS)
+EXISTING=$(crontab -l 2>/dev/null || true)
+if echo "$EXISTING" | grep -Fq "$CRON_SCRIPT"; then
   echo "Cron job already installed: $CRON_LINE"
 else
-  (crontab -l 2>/dev/null; echo "$CRON_LINE") | crontab -
-  echo "Installed cron job: $CRON_LINE"
+  TMP=$(mktemp)
+  echo "$EXISTING" | grep -v '^$' > "$TMP" 2>/dev/null || true
+  echo "$CRON_LINE" >> "$TMP"
+  crontab "$TMP" && rm -f "$TMP" && echo "Installed cron job: $CRON_LINE" || { echo "Failed to install crontab"; rm -f "$TMP"; exit 1; }
 fi
 echo ""
 echo "Verify: crontab -l"
