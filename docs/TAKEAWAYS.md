@@ -11,7 +11,7 @@ A blueprint for evolving an LLM-orchestrated aerospace design workflow. Explores
 | Principle | Project1 Implementation | llm-orchestrated-systems-design-agent Equivalent |
 |-----------|---------------------------|----------------------------|
 | **Autonomous evolution loop** | Runs every 4–8 hours; reads self, plans, implements, commits | Run cycles that: read design state, simulate/verify, plan next subsystem, prototype, document |
-| **Verification gates** | Build + test + clippy must pass before commit; revert on failure | Structural/thermal/propulsion simulations must pass; regulatory checks; safety margins |
+| **Verification gates** | Build + test must pass before commit; revert on failure | Structural/thermal/propulsion simulations must pass; regulatory checks; safety margins |
 | **Immutable constitution** | `IDENTITY.md` — never modified by agent | `IDENTITY.md` — mission, constraints, non-negotiables (safety, legality) |
 | **Voice & values** | `PERSONALITY.md` — how the agent communicates | `VOICE.md` — how it documents designs, reports risks, asks for human review |
 | **Memory & continuity** | `JOURNAL.md` — append-only session log | `JOURNAL.md` — design decisions, test results, failure modes, lessons |
