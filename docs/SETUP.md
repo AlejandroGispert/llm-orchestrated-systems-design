@@ -110,7 +110,7 @@ Run the evolution every 4 hours using **Cursor’s built-in agent** from the CLI
    ```bash
    curl https://cursor.com/install -fsS | bash
    ```
-   Authenticate so `agent` works. You can put `CURSOR_API_KEY=...` in the repo’s `.env`; both scripts load `.env` automatically (so cron and manual runs get the key). See [Cursor CLI headless docs](https://cursor.com/docs/cli/headless).
+   Authenticate so `agent` works. Put `CURSOR_API_KEY=...` in the repo’s `.env`; both scripts load it automatically. To **push after each run**, add to `.env`: `GH_TOKEN=ghp_...` and `REPO=youruser/llm-orchestrated-systems-design`. See [Cursor CLI headless docs](https://cursor.com/docs/cli/headless).
 
 2. **Run one evolution manually:**
    ```bash

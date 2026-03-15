@@ -61,12 +61,18 @@ fi
 # Use --model auto so Cursor picks an available model (avoids "not available in the slow pool" errors)
 agent -p --force --model auto "$PROMPT" || true
 
-# Optional push (same as evolve.sh)
+# Optional push: set GH_TOKEN and REPO (e.g. in .env) to push after each run
 REPO="${REPO:-}"
-if [ -n "${GH_TOKEN:-}" ] && [ -n "$REPO" ]; then
-  if ! git diff --quiet HEAD origin/main 2>/dev/null; then
-    echo "→ Pushing..."
-    git push "https://x-access-token:${GH_TOKEN}@github.com/${REPO}.git" HEAD:main 2>/dev/null || echo "  Push skipped (check token/perms)"
+if [ -z "${GH_TOKEN:-}" ] || [ -z "$REPO" ]; then
+  echo "  (Push skipped: set GH_TOKEN and REPO=owner/repo in .env to enable)"
+elif git diff --quiet HEAD origin/main 2>/dev/null; then
+  echo "  (Push skipped: no new commits to push)"
+else
+  echo "→ Pushing..."
+  if git push "https://x-access-token:${GH_TOKEN}@github.com/${REPO}.git" HEAD:main 2>/dev/null; then
+    echo "  Pushed to origin/main"
+  else
+    echo "  Push failed (check GH_TOKEN, REPO, and branch name)"
   fi
 fi
 
