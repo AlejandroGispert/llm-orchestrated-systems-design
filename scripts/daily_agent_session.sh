@@ -43,8 +43,8 @@ for f in IDENTITY.md JOURNAL.md LEARNINGS.md; do
   fi
 done
 
-# ── Step 2: Run evolution session (Python agent) ──
-echo "→ Running evolution session..."
+# ── Step 2: Run agent session (Python agent) ──
+echo "→ Running agent session..."
 cd "$REPO_ROOT"
 # Prefer venv Python (avoids macOS "externally-managed-environment")
 PYTHON="${REPO_ROOT}/.venv/bin/python"

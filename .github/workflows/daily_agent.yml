@@ -11,7 +11,7 @@ permissions:
   issues: write
 
 jobs:
-  evolve:
+  daily_agent_session:
     runs-on: ubuntu-latest
     timeout-minutes: 150
 
@@ -42,7 +42,7 @@ jobs:
           git config user.email "agentic-design-lab[bot]@users.noreply.github.com"
 
       - name: Run evolution session
-        id: evolve
+        id: daily_agent_session
         continue-on-error: true
         env:
           LLM_PROVIDER: gemini
@@ -51,11 +51,11 @@ jobs:
           REPO: ${{ github.repository }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          chmod +x scripts/evolve.sh
-          ./scripts/evolve.sh
+          chmod +x scripts/daily_agent_session.sh
+          ./scripts/daily_agent_session.sh
 
       - name: Retry on failure
-        if: steps.evolve.outcome == 'failure'
+        if: steps.daily_agent_session.outcome == 'failure'
         env:
           LLM_PROVIDER: gemini
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
@@ -65,4 +65,4 @@ jobs:
         run: |
           echo "Retrying after 2 minutes.."
           sleep 120
-          ./scripts/evolve.sh
+          ./scripts/daily_agent_session.sh
