@@ -63,6 +63,6 @@ jobs:
           REPO: ${{ github.repository }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          echo "Retrying after 2 minutes..."
+          echo "Retrying after 2 minutes.."
           sleep 120
           ./scripts/evolve.sh
