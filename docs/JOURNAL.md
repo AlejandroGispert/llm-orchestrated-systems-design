@@ -2,7 +2,11 @@
 
 Append-only log of evolution sessions. Each entry: what was tried, what worked, what's next.
 
-**Next priority:** Draft mass budget and propulsion requirements (concept-v1 §4.3), or refine design in designs/, or update LEARNINGS.md.
+**Next priority:** Refine design in designs/, add a new trade/requirement in specs/, or update LEARNINGS.md based on simulation + mass/propulsion insights.
+
+---
+
+**Day 366 (2026-03-16 06:57)** — Session: Read IDENTITY, JOURNAL, LEARNINGS, TAKEAWAYS; listed designs/ (concept-v1.md). Did next priority: added specs/mass-and-propulsion.md with first-pass mass budget and propulsion requirements for Concept V1 (top-level mass fractions, rocket sustainer Δv/T/W/Isp bands, air-breathing fuel and thrust bands, and future verification checks tied to trajectory and G-limits). Next: refine concept-v1 and specs with tighter coupling to trajectory outputs (e.g., updating Δv and thrust bands from additional runs) or capture new process/design lessons in LEARNINGS.md.
 
 ---
 
