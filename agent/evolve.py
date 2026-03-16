@@ -21,7 +21,7 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 
 
 def _get_llm(tools: list):
-    """Return LLM with tools bound. Uses Ollama if LLM_PROVIDER=ollama else Anthropic."""
+    """Return LLM with tools bound. Uses Gemini (default) or Ollama."""
     provider = (os.environ.get("LLM_PROVIDER") or "").strip().lower()
     if provider == "ollama":
         try:
@@ -31,14 +31,50 @@ def _get_llm(tools: list):
             sys.exit(1)
         model_name = os.environ.get("OLLAMA_MODEL", "llama3.1")
         return ChatOllama(model=model_name).bind_tools(tools)
-    # Default: Anthropic
-    api_key = os.environ.get("ANTHROPIC_API_KEY")
+
+    if provider == "gemini":
+        api_key = os.environ.get("GEMINI_API_KEY")
+        if not api_key:
+            print(
+                "Error: GEMINI_API_KEY required when LLM_PROVIDER=gemini",
+                file=sys.stderr,
+            )
+            sys.exit(1)
+        try:
+            from langchain_google_genai import ChatGoogleGenerativeAI
+        except ImportError:
+            print(
+                "Error: LLM_PROVIDER=gemini requires langchain-google-genai and google-genai. "
+                "Run: pip install langchain-google-genai google-genai",
+                file=sys.stderr,
+            )
+            sys.exit(1)
+        model_name = os.environ.get("GEMINI_MODEL", "gemini-2.0-flash")
+        return ChatGoogleGenerativeAI(
+            model=model_name,
+            api_key=api_key,
+        ).bind_tools(tools)
+    # Default: Gemini even if LLM_PROVIDER unset (assuming GEMINI_API_KEY is present)
+    api_key = os.environ.get("GEMINI_API_KEY")
     if not api_key:
-        print("Error: ANTHROPIC_API_KEY required (or set LLM_PROVIDER=ollama for local Ollama)", file=sys.stderr)
+        print(
+            "Error: GEMINI_API_KEY required "
+            "(or set LLM_PROVIDER=ollama and run a local Ollama model)",
+            file=sys.stderr,
+        )
         sys.exit(1)
-    from langchain_anthropic import ChatAnthropic
-    return ChatAnthropic(
-        model="claude-sonnet-4-20250514",
+    try:
+        from langchain_google_genai import ChatGoogleGenerativeAI
+    except ImportError:
+        print(
+            "Error: Gemini provider requires langchain-google-genai and google-genai. "
+            "Run: pip install langchain-google-genai google-genai",
+            file=sys.stderr,
+        )
+        sys.exit(1)
+    model_name = os.environ.get("GEMINI_MODEL", "gemini-2.0-flash")
+    return ChatGoogleGenerativeAI(
+        model=model_name,
         api_key=api_key,
     ).bind_tools(tools)
 
@@ -149,7 +185,7 @@ Rules:
             return "tools"
         return "__end__"
 
-    graph = StateGraph({"messages": []})
+    graph = StateGraph(dict)
 
     graph.add_node("agent", agent_node)
     graph.add_node("tools", tool_node)
@@ -168,9 +204,18 @@ def main():
     parser.add_argument("--time", required=True)
     args = parser.parse_args()
 
-    if not os.environ.get("ANTHROPIC_API_KEY") and (os.environ.get("LLM_PROVIDER") or "").strip().lower() != "ollama":
-        print("Error: ANTHROPIC_API_KEY required (or set LLM_PROVIDER=ollama for local Ollama)", file=sys.stderr)
-        sys.exit(1)
+    provider = (os.environ.get("LLM_PROVIDER") or "").strip().lower()
+    if provider == "ollama":
+        # Local provider, no external key required
+        pass
+    else:
+        # Default / gemini provider path
+        if not os.environ.get("GEMINI_API_KEY"):
+            print(
+                "Error: GEMINI_API_KEY required (or set LLM_PROVIDER=ollama for local Ollama).",
+                file=sys.stderr,
+            )
+            sys.exit(1)
 
     graph = create_graph(args.day, args.date, args.time)
     graph.invoke({"messages": []})
