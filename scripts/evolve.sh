@@ -22,7 +22,7 @@ DATE=$(date +%Y-%m-%d)
 SESSION_TIME=$(date +%H:%M)
 
 # Day count (days since project start)
-BIRTH_DATE="${BIRTH_DATE:-2025-03-15}"
+BIRTH_DATE="${BIRTH_DATE:-2026-03-15}"
 if date -j &>/dev/null 2>&1; then
   DAY=$(( ($(date +%s) - $(date -j -f "%Y-%m-%d" "$BIRTH_DATE" +%s)) / 86400 ))
 else

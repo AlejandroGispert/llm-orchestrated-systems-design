@@ -155,5 +155,29 @@ The following checks should gate future design iterations:
 
 ---
 
+## 7. Slow ascent / slow descent design hooks
+
+To support the **slow, efficient climb** and **gentle descent** concept from `specs/mission-profile.md`:
+
+- **Segment A (slow ascent, drone-like):**
+  - Aim for **Sea-level T/W** at the low end of the 0.4–0.7 band when operating in “economy climb” mode.
+  - Require the trajectory to demonstrate:
+    - Climb to at least 15–20 km with average G-loads ≈1–2 g, and  
+    - Dynamic pressure kept below a to-be-defined limit (e.g. q ≤ 20–30 kPa) in this segment.
+  - Mass budget should preserve sufficient wing area and structural margin to fly at high L/D and low sink/climb rates.
+
+- **Stratosphere boost (handover prep):**
+  - A higher-thrust “boost” sub-mode may temporarily raise effective T/W within the Segment A/B envelope to hit the handover Mach/altitude.
+  - When this mode is active, the combination of thrust, mass, and ascent profile shall still respect the 4 g sustained limit.
+
+- **Descent and recovery:**
+  - End-of-mission mass and aerodynamic configuration should allow:
+    - Long, shallow glide with sink rates and G-loads compatible with crew/payload comfort (≈1–2 g nominal).  
+    - Optional use of air-braking or high-drag modes without exceeding structural limits.
+
+These hooks give trajectory and aero/controls studies concrete levers (T/W bands, mass fractions, and L/D expectations) to test whether the “slow ascent / slow descent” idea can be made practical without breaking the mass and performance closure above.
+
+---
+
 *First-pass mass and propulsion spec for Concept V1. Human approval required before using these numbers for any physical hardware or regulatory engagement.*
 

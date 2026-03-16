@@ -57,4 +57,27 @@
 
 ---
 
+## 6. Slow ascent and controlled descent concept
+
+To make the mission more drone-like in its early/late phases and reduce structural/thermal risk:
+
+- **Slow, efficient climb (drone-like):**
+  - Target a relatively low climb rate and low dynamic pressure from takeoff to ~15–20 km.
+  - Vehicle operates in a high-lift, high-L/D configuration (large wing area, moderate AoA).
+  - Primary objective: gain altitude cheaply, not race to Mach number; G-loads should stay well below the 4 g limit (≈1–2 g typical).
+
+- **Stratospheric “effective” boost:**
+  - Around the lower stratosphere (~20–30 km), transition to a more aggressive thrust mode (higher T/W) to reach the handover conditions in §2 (Mach 4–6, ~25–30 km).
+  - This phase trades higher thrust and drag for shorter duration, while still respecting the 4 g sustained limit.
+
+- **Slow, shallow descent:**
+  - Re-entry and glide should be flown as a long, shallow trajectory with:
+    - Low peak deceleration (≤4 g sustained), and  
+    - Limited peak dynamic pressure in the sensible atmosphere.
+  - Operationally this looks closer to a high-altitude drone gliding home than a steep capsule re-entry.
+
+Trajectory runs and future guidance laws should be evaluated explicitly against these “slow ascent / slow descent” intents, not just apogee and G constraints.
+
+---
+
 *Mission profile for conceptual design and first trajectory runs. Human approval required before physical build or test.*
