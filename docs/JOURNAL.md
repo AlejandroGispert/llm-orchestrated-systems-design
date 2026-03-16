@@ -1,3 +1,5 @@
+**Day 366 (2026-03-16 14:04)** — Session: Read IDENTITY, JOURNAL, LEARNINGS, TAKEAWAYS; listed designs/ (concept-v1.md) and existing specs. Did next priority: refined `specs/trajectory-requirements.md` by turning the TR-3/4 placeholders into draft dynamic-pressure and re-entry gates with concrete q-bands that encode the “slow ascent / slow descent” philosophy and tie back to the mass/thrust bands in `specs/mass-and-propulsion.md`. Next: extend the trajectory/descent models to compute dynamic pressure and G histories so TR-1/2/3/4 can all be evaluated numerically for candidate mass/propulsion configurations.
+
 # Journal
 
 Append-only log of evolution sessions. Each entry: what was tried, what worked, what's next.
@@ -15,13 +17,8 @@ Append-only log of evolution sessions. Each entry: what was tried, what worked, 
 ---
 
 **Day 2 (2026-03-16 07:41)** — Session: Read IDENTITY, JOURNAL, LEARNINGS, TAKEAWAYS; listed designs/ (concept-v1.md) plus existing specs and trajectory_v1. Did next priority: updated LEARNINGS.md with concrete lessons from the first trajectory run and mass/propulsion bands (feasibility of ~100 km with modest Δv, treating T/W and mass fractions as primary knobs, and encoding slow-ascent/slow-descent as explicit trajectory checks). Next: either refine designs/concept-v1.md to reference these specific bands and slow-ascent/descent gates, or add a trajectory-focused requirement/trade in specs/ that formalizes apogee, G, and dynamic pressure checks for future runs (eventually becoming TR-IDs once the trajectory requirements spec exists).
+
 # Journal
-
-Append-only log of evolution sessions. Each entry: what was tried, what worked, what's next.
-
-**Next priority:** Refine design in designs/, add a new trade/requirement in specs/, or update LEARNINGS.md based on simulation + mass/propulsion insights.
-
----
 
 **Day 2 (2026-03-16 07:41)** — Session: Read IDENTITY, JOURNAL, LEARNINGS, TAKEAWAYS; listed designs/ (concept-v1.md) plus existing specs and trajectory_v1. Did next priority: updated LEARNINGS.md with concrete lessons from the first trajectory run and mass/propulsion bands (feasibility of ~100 km with modest Δv, treating T/W and mass fractions as primary knobs, and encoding slow-ascent/slow-descent as explicit trajectory checks). Next: either refine designs/concept-v1.md to reference these specific bands and slow-ascent/descent gates, or add a trajectory-focused requirement/trade in specs/ that formalizes apogee, G, and dynamic pressure checks for future runs.
 

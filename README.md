@@ -1,20 +1,23 @@
 # Agentic Design Lab
 
-LLM-orchestrated multi-disciplinary design workflow. Autonomous evolving agent that iteratively proposes, simulates, verifies, and documents a design concept. Runs every 4–8 hours (GitHub Actions or local cron): reads design state, plans improvements, implements, verifies, and commits.
+LLM-orchestrated multi-disciplinary design workflow. Autonomous evolving agent that iteratively proposes, simulates, verifies, and documents a design concept. Can run automatically (GitHub Actions) or locally: reads design state, plans improvements, implements, verifies, and commits.
 
 **Positioning:** Research platform exploring how agentic AI systems can assist early-stage multidisciplinary conceptual design. Closed-loop design → simulate → evaluate → revise.
 
-## How It Works
+## Daily Concept Design Agent
 
-- **Schedule:** Runs every 4 hours (cron: `0 */4 * * *`)
-- **Loop:** Plan → implement → simulate → verify → journal → push
-- **Scope:** Design docs, simulations, specs 
+- **Workflow:** `.github/workflows/daily_agent.yml`
+  - Name: **Daily Concept Design Agent**
+  - Schedule: `0 0 * * *` (once per day at 00:00 UTC)
+  - Behavior: checks out the repo, installs dependencies, and runs a single evolution cycle via `scripts/daily_agent_session.sh`.
+- **Loop:** Plan → implement → simulate (optional) → verify → journal → commit → push
+- **Scope:** Design docs (`designs/`), simulations (`simulations/`), specs (`specs/`), and agent memory docs (`docs/`).
 
 ## Project Structure
 
 ```
-├── .github/workflows/evolve.yml   # Scheduled evolution
-├── scripts/evolve.sh              # Evolution pipeline
+├── .github/workflows/daily_agent.yml   # Daily Concept Design Agent workflow
+├── scripts/daily_agent_session.sh      # Daily agent pipeline
 ├── docs/                          # Documentation
 │   ├── IDENTITY.md                # Agent constitution (immutable)
 │   ├── JOURNAL.md                 # Session log
@@ -28,23 +31,21 @@ LLM-orchestrated multi-disciplinary design workflow. Autonomous evolving agent t
 
 ## Run Locally
 
-**Option A — Cloud (Anthropic, paid)**  
 ```bash
-ANTHROPIC_API_KEY=sk-... ./scripts/evolve.sh
+cd /Users/alejandrolivemusicmac/Documents/1_CODE_PROJECTS/llm-orchestrated-systems-design
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+
+# Load environment (includes GEMINI_API_KEY, REPO, etc.)
+set -a && . .env && set +a
+
+# Run one daily agent session (Gemini by default)
+./scripts/daily_agent_session.sh
 ```
 
-**Option B — Local LLM (free, no API key)**  
-```bash
-# Install Ollama + pull a model: https://ollama.com → e.g. ollama pull llama3.1
-LLM_PROVIDER=ollama ./scripts/evolve.sh
-```
-
-**Option C — Cursor CLI (no Anthropic key)**  
-Uses your Cursor subscription. One run: `./scripts/run-evolve-cursor.sh`. Every 4 hours: `0 */4 * * * /path/to/scripts/run-evolve-cron.sh` in crontab. See [docs/SETUP.md](docs/SETUP.md) §6.
-
-To run every 4 hours on your machine (no GitHub Actions, no Anthropic): use a **cron job** with Option B (Ollama) or Option C (Cursor CLI). See [docs/SETUP.md](docs/SETUP.md).
-
-Requires: Python 3.11+, `gh` CLI (optional, for push). See [docs/SETUP.md](docs/SETUP.md).
+- To use a local model instead, export `LLM_PROVIDER=ollama` and configure Ollama as described in [docs/SETUP.md](docs/SETUP.md).
+- Requires: Python 3.11+, `gh` CLI (optional, for push). See [docs/SETUP.md](docs/SETUP.md).
 
 ## License
 
