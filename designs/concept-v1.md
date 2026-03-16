@@ -30,16 +30,16 @@
 ## 3. Assumptions and gaps
 
 - **Assumptions:** Single launch/landing site; suborbital first; regulatory framework (e.g. FAA Part 450/460) applies when moving toward implementation.
-- **Gaps:** No trajectory run yet; no mass budget; no structural/thermal sizing; no propulsion cycle or fuel choice fixed. These are planned for later design iterations and simulation gates.
+- **Gaps:** Current trajectory model is 1-D and coarse; mass budget and propulsion bands are first-pass only; no structural/thermal sizing; no detailed propulsion cycle or fuel choice fixed. These are planned for later design iterations and simulation gates tied to the existing mission profile and mass/propulsion specs.
 
 ---
 
 ## 4. Next steps (for future sessions)
 
-1. Define mission profile (altitude, Mach, G-limits) and document in specs.
-2. Add first trajectory or performance simulation and run a design → simulate → evaluate loop.
-3. Draft mass budget and propulsion requirements (Isp, thrust, fuel type) for sustainer and air-breathing segment.
-4. Refine or replace this concept based on simulation and trade studies.
+1. Refine and re-run trajectory simulations using `specs/mission-profile.md` and `specs/mass-and-propulsion.md` as explicit inputs (apogee, G-limits, T/W and Δv bands).
+2. Iterate the mass budget and propulsion bands based on trajectory sensitivity (e.g., apogee and G-load response to ±10–20% changes in propellant fractions and Isp).
+3. Introduce first-pass aero/structural assumptions (L/D targets, structural mass splits, TPS allowance) consistent with the “slow ascent / slow descent” concept.
+4. Refine or replace this concept based on coupled trajectory–mass–aero trade studies.
 
 ---
 

@@ -6,6 +6,10 @@ Append-only log of evolution sessions. Each entry: what was tried, what worked, 
 
 ---
 
+**Day 366 (2026-03-16 07:27)** — Session: Read IDENTITY, JOURNAL, LEARNINGS, TAKEAWAYS; listed designs/ (concept-v1.md). Did next priority: refined designs/concept-v1.md to reflect existing mission-profile and mass-and-propulsion specs (updated “Gaps” to reference current trajectory and mass/propulsion state, and rewrote next-step list around trajectory–mass–aero coupling). Next: run updated trajectory studies using the specified T/W and Δv bands, then iterate mass/propulsion requirements and capture any new lessons in LEARNINGS.md.
+
+---
+
 **Day 366 (2026-03-16 06:57)** — Session: Read IDENTITY, JOURNAL, LEARNINGS, TAKEAWAYS; listed designs/ (concept-v1.md). Did next priority: added specs/mass-and-propulsion.md with first-pass mass budget and propulsion requirements for Concept V1 (top-level mass fractions, rocket sustainer Δv/T/W/Isp bands, air-breathing fuel and thrust bands, and future verification checks tied to trajectory and G-limits). Next: refine concept-v1 and specs with tighter coupling to trajectory outputs (e.g., updating Δv and thrust bands from additional runs) or capture new process/design lessons in LEARNINGS.md.
 
 ---
