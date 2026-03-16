@@ -1,4 +1,4 @@
-name: Evolution
+name: Daily Concept Design Agent
 
 on:
   schedule:
