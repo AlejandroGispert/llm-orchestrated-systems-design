@@ -1,0 +1,22 @@
+Trajectory Run 2 — Concept V1 with Dynamic Pressure
+============================================================
+
+Mission profile: specs/mission-profile.md
+Requirements:    specs/trajectory-requirements.md
+
+RESULTS:
+  Apogee:            99.32 km
+  Max G-load:        1.34 g
+  Max dynamic press: 8.42 kPa
+
+VERIFICATION:
+  TR-1 (Apogee 80-100 km):     PASS
+  TR-2 (G ≤ 5 g peak):         PASS
+  TR-3 (q_max ≤ 60 kPa):       PASS
+  TR-3 target (q ≤ 40 kPa):    PASS
+
+NOTES:
+  - This is a 1-D point-mass model with simplified atmosphere.
+  - Drag not yet modeled; actual q profile will differ.
+  - TR-2 sustained G check (≤4 g) requires time-series analysis.
+  - TR-4 (descent/re-entry) not yet modeled.
