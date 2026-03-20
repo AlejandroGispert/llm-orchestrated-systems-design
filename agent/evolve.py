@@ -14,7 +14,7 @@ from pathlib import Path
 
 from langgraph.graph import StateGraph, END
 from langgraph.prebuilt import ToolNode
-from langchain_core.messages import HumanMessage, SystemMessage
+from langchain_core.messages import HumanMessage
 from langchain_core.tools import tool
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
@@ -72,7 +72,7 @@ def _get_llm(tools: list):
                 file=sys.stderr,
             )
             sys.exit(1)
-        model_name = os.environ.get("ANTHROPIC_MODEL", "claude-3-7-sonnet-latest")
+        model_name = os.environ.get("ANTHROPIC_MODEL", "claude-sonnet-4-5")
         return ChatAnthropic(
             model=model_name,
             api_key=api_key,
@@ -90,7 +90,7 @@ def _get_llm(tools: list):
                 file=sys.stderr,
             )
             sys.exit(1)
-        model_name = os.environ.get("ANTHROPIC_MODEL", "claude-3-7-sonnet-latest")
+        model_name = os.environ.get("ANTHROPIC_MODEL", "claude-sonnet-4-5")
         return ChatAnthropic(
             model=model_name,
             api_key=os.environ["ANTHROPIC_API_KEY"],
@@ -212,15 +212,25 @@ Rules:
     def agent_node(state: dict):
         messages = state.get("messages", [])
         if not messages:
-            sys_prompt = build_system_prompt(state)
-            messages = [
-                SystemMessage(content=sys_prompt),
-                HumanMessage(content="Plan and implement ONE improvement. Use your tools, then commit."),
-            ]
+            # Anthropic requires at least one non-system message.
+            # Put all run context/instructions in the initial user prompt.
+            user_prompt = (
+                build_system_prompt(state)
+                + "\n\nPlan and implement ONE improvement. Use your tools, then commit."
+            )
+            messages = [HumanMessage(content=user_prompt)]
         response = model.invoke(messages)
         return {"messages": messages + [response]}
 
     tool_node = ToolNode(tools)
+
+    def tools_node(state: dict):
+        # ToolNode returns only the new tool messages.
+        # Preserve full conversation history so Anthropic can validate
+        # tool_result <-> tool_use pairing across turns.
+        result = tool_node.invoke(state)
+        tool_messages = result.get("messages", [])
+        return {"messages": state["messages"] + tool_messages}
 
     def should_continue(state: dict):
         last = state["messages"][-1]
@@ -231,7 +241,7 @@ Rules:
     graph = StateGraph(dict)
 
     graph.add_node("agent", agent_node)
-    graph.add_node("tools", tool_node)
+    graph.add_node("tools", tools_node)
 
     graph.set_entry_point("agent")
     graph.add_conditional_edges("agent", should_continue, {"tools": "tools", "__end__": END})
@@ -265,7 +275,46 @@ def main():
         sys.exit(1)
 
     graph = create_graph(args.day, args.date, args.time)
-    graph.invoke({"messages": []})
+    try:
+        graph.invoke({"messages": []})
+    except Exception as e:
+        msg = str(e)
+
+        # Anthropic-specific common failure modes: provide actionable guidance
+        # without dumping a full traceback for expected operational errors.
+        if "credit balance is too low" in msg.lower():
+            print(
+                "Anthropic API error: insufficient API credits for this key/workspace.\n"
+                "Fix: add API credits in Anthropic Console (Plans & Billing) OR use a key from a funded workspace.\n"
+                "Temporary workaround: run with LLM_PROVIDER=gemini (if GEMINI_API_KEY is set) or LLM_PROVIDER=ollama.",
+                file=sys.stderr,
+            )
+            sys.exit(2)
+        if "invalid x-api-key" in msg.lower() or "authentication" in msg.lower():
+            print(
+                "Anthropic API error: invalid/unauthorized API key.\n"
+                "Fix: update ANTHROPIC_API_KEY in .env (or environment) and retry.",
+                file=sys.stderr,
+            )
+            sys.exit(2)
+        if "model" in msg.lower() and ("not found" in msg.lower() or "not available" in msg.lower()):
+            print(
+                "Anthropic API error: requested model is unavailable for this account.\n"
+                "Fix: set ANTHROPIC_MODEL to an allowed model and retry.",
+                file=sys.stderr,
+            )
+            sys.exit(2)
+        if "unexpected `tool_use_id` found in `tool_result` blocks" in msg:
+            print(
+                "Anthropic tool protocol error: received a tool_result without a matching prior tool_use.\n"
+                "This run has been stopped to keep state consistent. Please retry the session.",
+                file=sys.stderr,
+            )
+            sys.exit(2)
+
+        # Unknown runtime error: keep details for debugging.
+        print(f"Agent runtime error: {msg}", file=sys.stderr)
+        raise
 
 
 if __name__ == "__main__":

@@ -20,6 +20,8 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 REPO="${REPO:-}"
+# Load .env so local runs pick up API keys without manual export.
+[ -f "$REPO_ROOT/.env" ] && set -a && source "$REPO_ROOT/.env" && set +a
 DATE=$(date +%Y-%m-%d)
 SESSION_TIME=$(date +%H:%M)
 
