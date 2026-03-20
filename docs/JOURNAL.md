@@ -1,4 +1,4 @@
-**Day 366 (2026-03-16 14:04)** — Session: Read IDENTITY, JOURNAL, LEARNINGS, TAKEAWAYS; listed designs/ (concept-v1.md) and existing specs. Did next priority: refined `specs/trajectory-requirements.md` by turning the TR-3/4 placeholders into draft dynamic-pressure and re-entry gates with concrete q-bands that encode the “slow ascent / slow descent” philosophy and tie back to the mass/thrust bands in `specs/mass-and-propulsion.md`. Next: extend the trajectory/descent models to compute dynamic pressure and G histories so TR-1/2/3/4 can all be evaluated numerically for candidate mass/propulsion configurations.
+
 
 # Journal
 
@@ -7,6 +7,7 @@ Append-only log of evolution sessions. Each entry: what was tried, what worked, 
 **Next priority:** Refine design in designs/, add a new trade/requirement in specs/, or update LEARNINGS.md based on simulation + mass/propulsion insights.
 
 ---
+**Day 2 (2026-03-16 14:04)** — Session: Read IDENTITY, JOURNAL, LEARNINGS, TAKEAWAYS; listed designs/ (concept-v1.md) and existing specs. Did next priority: refined `specs/trajectory-requirements.md` by turning the TR-3/4 placeholders into draft dynamic-pressure and re-entry gates with concrete q-bands that encode the “slow ascent / slow descent” philosophy and tie back to the mass/thrust bands in `specs/mass-and-propulsion.md`. Next: extend the trajectory/descent models to compute dynamic pressure and G histories so TR-1/2/3/4 can all be evaluated numerically for candidate mass/propulsion configurations.
 
 **Day 2 (2026-03-16 08:30)** — Session: Read IDENTITY, JOURNAL, LEARNINGS, TAKEAWAYS; listed designs/ (concept-v1.md). Did next priority: refined `designs/concept-v1.md` assumptions and gaps to tie Concept V1 explicitly to TR-1/2 in `specs/trajectory-requirements.md`, the “slow ascent / slow descent” philosophy in `docs/LEARNINGS.md`, and future TR-3/4 dynamic-pressure and re-entry corridor gates plus the mass/prop bands in `specs/mass-and-propulsion.md`. Next: either extend the trajectory simulator to compute dynamic pressure and candidate TR-3/4 limits, or add a dedicated specs entry that formalizes dynamic-pressure and re-entry constraints once those simulations exist.
 

@@ -9,9 +9,10 @@
 #   CURSOR_API_KEY  — set if not already authenticated (see cursor.com/docs/cli)
 #   REPO            — optional; GitHub repo (owner/name) for push
 #   GH_TOKEN        — optional; for git push after commit
-#   BIRTH_DATE      — optional; YYYY-MM-DD for day count (default 2025-03-15)
+#   BIRTH_DATE      — optional; YYYY-MM-DD for day count (default 2026-03-15)
 #
-# Uses --model auto so Cursor picks a model available in your pool (avoids slow-pool errors).
+# Uses a valid `--model` value so the Cursor agent doesn't fail model validation.
+# You can override with CURSOR_MODEL if needed.
 
 set -euo pipefail
 
@@ -22,8 +23,12 @@ REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 DATE=$(date +%Y-%m-%d)
 SESSION_TIME=$(date +%H:%M)
 
-BIRTH_DATE="${BIRTH_DATE:-2025-03-15}"
-BIRTH_EPOCH=$(date -j -f "%Y-%m-%d" "$BIRTH_DATE" +%s 2>/dev/null || date -d "$BIRTH_DATE" +%s 2>/dev/null)
+BIRTH_DATE="${BIRTH_DATE:-2026-03-15}"
+if date -j &>/dev/null 2>&1; then
+  BIRTH_EPOCH="$(date -j -f "%Y-%m-%d" "$BIRTH_DATE" +%s)"
+else
+  BIRTH_EPOCH="$(date -d "$BIRTH_DATE" +%s)"
+fi
 DAY=$(( ($(date +%s) - BIRTH_EPOCH) / 86400 ))
 
 echo "=== Agentic Design Lab (Cursor CLI) — Day $DAY ($DATE $SESSION_TIME) ==="
@@ -58,8 +63,9 @@ if ! command -v agent &>/dev/null; then
   exit 1
 fi
 
-# Use --model auto so Cursor picks an available model (avoids "not available in the slow pool" errors)
-agent -p --force --model auto "$PROMPT" || true
+# Use a fixed, likely-fast model by default (override via CURSOR_MODEL).
+CURSOR_MODEL="${CURSOR_MODEL:-composer-2-fast}"
+agent -p --force --model "$CURSOR_MODEL" "$PROMPT" || agent -p --force "$PROMPT" || true
 
 # Optional push: set GH_TOKEN and REPO (e.g. in .env) to push after each run
 REPO="${REPO:-}"
