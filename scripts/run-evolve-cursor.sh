@@ -64,7 +64,7 @@ if ! command -v agent &>/dev/null; then
 fi
 
 # Use a fixed, likely-fast model by default (override via CURSOR_MODEL).
-CURSOR_MODEL="${CURSOR_MODEL:-composer-2-fast}"
+CURSOR_MODEL="${CURSOR_MODEL:-kimi-k2.5b}"
 agent -p --force --model "$CURSOR_MODEL" "$PROMPT" || agent -p --force "$PROMPT" || true
 
 # Optional push: set GH_TOKEN and REPO (e.g. in .env) to push after each run

@@ -10,6 +10,8 @@
 #   ANTHROPIC_API_KEY  — required if not using Ollama
 #   LLM_PROVIDER       — set to "ollama" for local/free LLM (no API key needed)
 #   OLLAMA_MODEL       — optional; default llama3.1 (only if LLM_PROVIDER=ollama)
+#   AGENT_RUNTIME      — "langgraph" (default) or "hermes"
+#   HERMES_MODEL       — optional Hermes model id (used when AGENT_RUNTIME=hermes)
 #   REPO               — GitHub repo (e.g. owner/llm-orchestrated-systems-design)
 #   GH_TOKEN           — for gh CLI (issues, push)
 
@@ -49,11 +51,22 @@ cd "$REPO_ROOT"
 # Prefer venv Python (avoids macOS "externally-managed-environment")
 PYTHON="${REPO_ROOT}/.venv/bin/python"
 [ -x "$PYTHON" ] || PYTHON="python3"
-$PYTHON -m agent.evolve \
-  --day "$DAY" \
-  --date "$DATE" \
-  --time "$SESSION_TIME" \
-  || true
+AGENT_RUNTIME="${AGENT_RUNTIME:-langgraph}"
+if [ "$AGENT_RUNTIME" = "hermes" ]; then
+  echo "  runtime: hermes"
+  $PYTHON -m agent.evolve_hermes \
+    --day "$DAY" \
+    --date "$DATE" \
+    --time "$SESSION_TIME" \
+    || true
+else
+  echo "  runtime: langgraph"
+  $PYTHON -m agent.evolve \
+    --day "$DAY" \
+    --date "$DATE" \
+    --time "$SESSION_TIME" \
+    || true
+fi
 
 # ── Step 3: Push if we have commits ──
 if [ -n "${GH_TOKEN:-}" ] && [ -n "${REPO:-}" ]; then

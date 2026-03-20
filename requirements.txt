@@ -1,5 +1,6 @@
 langgraph>=0.2.0
 langchain-core>=1.2.5
+langchain-anthropic>=0.3.0
 # Optional for local/free runs: pip install langchain-ollama && LLM_PROVIDER=ollama
 langchain-ollama>=0.2.0
 # Gemini: main provider (via LangChain)

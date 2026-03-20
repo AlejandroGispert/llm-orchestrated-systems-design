@@ -1,0 +1,8 @@
+# Optional: Hermes Agent (NousResearch)
+#
+# Install manually (keeps CI unchanged):
+#   pip install -r requirements-hermes.txt
+#
+# Hermes can be used as a Python library (AIAgent) and/or via its CLI.
+#
+hermes-agent @ git+https://github.com/NousResearch/hermes-agent.git

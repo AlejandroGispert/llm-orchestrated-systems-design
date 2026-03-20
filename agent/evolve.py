@@ -21,7 +21,7 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 
 
 def _get_llm(tools: list):
-    """Return LLM with tools bound. Uses Gemini (default) or Ollama."""
+    """Return LLM with tools bound. Supports Anthropic, Gemini, or Ollama."""
     provider = (os.environ.get("LLM_PROVIDER") or "").strip().lower()
     if provider == "ollama":
         try:
@@ -54,29 +54,72 @@ def _get_llm(tools: list):
             model=model_name,
             api_key=api_key,
         ).bind_tools(tools)
-    # Default: Gemini even if LLM_PROVIDER unset (assuming GEMINI_API_KEY is present)
-    api_key = os.environ.get("GEMINI_API_KEY")
-    if not api_key:
-        print(
-            "Error: GEMINI_API_KEY required "
-            "(or set LLM_PROVIDER=ollama and run a local Ollama model)",
-            file=sys.stderr,
-        )
-        sys.exit(1)
-    try:
-        from langchain_google_genai import ChatGoogleGenerativeAI
-    except ImportError:
-        print(
-            "Error: Gemini provider requires langchain-google-genai and google-genai. "
-            "Run: pip install langchain-google-genai google-genai",
-            file=sys.stderr,
-        )
-        sys.exit(1)
-    model_name = os.environ.get("GEMINI_MODEL", "gemini-2.0-flash")
-    return ChatGoogleGenerativeAI(
-        model=model_name,
-        api_key=api_key,
-    ).bind_tools(tools)
+
+    if provider == "anthropic":
+        api_key = os.environ.get("ANTHROPIC_API_KEY")
+        if not api_key:
+            print(
+                "Error: ANTHROPIC_API_KEY required when LLM_PROVIDER=anthropic",
+                file=sys.stderr,
+            )
+            sys.exit(1)
+        try:
+            from langchain_anthropic import ChatAnthropic
+        except ImportError:
+            print(
+                "Error: LLM_PROVIDER=anthropic requires langchain-anthropic. "
+                "Run: pip install langchain-anthropic",
+                file=sys.stderr,
+            )
+            sys.exit(1)
+        model_name = os.environ.get("ANTHROPIC_MODEL", "claude-3-7-sonnet-latest")
+        return ChatAnthropic(
+            model=model_name,
+            api_key=api_key,
+        ).bind_tools(tools)
+
+    # Default provider order when LLM_PROVIDER is unset:
+    # 1) Anthropic (if ANTHROPIC_API_KEY exists), else 2) Gemini (if GEMINI_API_KEY exists).
+    if os.environ.get("ANTHROPIC_API_KEY"):
+        try:
+            from langchain_anthropic import ChatAnthropic
+        except ImportError:
+            print(
+                "Error: ANTHROPIC_API_KEY is set but langchain-anthropic is missing. "
+                "Run: pip install langchain-anthropic",
+                file=sys.stderr,
+            )
+            sys.exit(1)
+        model_name = os.environ.get("ANTHROPIC_MODEL", "claude-3-7-sonnet-latest")
+        return ChatAnthropic(
+            model=model_name,
+            api_key=os.environ["ANTHROPIC_API_KEY"],
+        ).bind_tools(tools)
+
+    if os.environ.get("GEMINI_API_KEY"):
+        try:
+            from langchain_google_genai import ChatGoogleGenerativeAI
+        except ImportError:
+            print(
+                "Error: GEMINI_API_KEY is set but Gemini deps are missing. "
+                "Run: pip install langchain-google-genai google-genai",
+                file=sys.stderr,
+            )
+            sys.exit(1)
+        model_name = os.environ.get("GEMINI_MODEL", "gemini-2.0-flash")
+        return ChatGoogleGenerativeAI(
+            model=model_name,
+            api_key=os.environ["GEMINI_API_KEY"],
+        ).bind_tools(tools)
+
+    print(
+        "Error: No provider credentials found. Set one of:\n"
+        "- ANTHROPIC_API_KEY (for Claude)\n"
+        "- GEMINI_API_KEY (for Gemini)\n"
+        "- or LLM_PROVIDER=ollama for local runs.",
+        file=sys.stderr,
+    )
+    sys.exit(1)
 
 
 # ── Tools the agent can use ──
@@ -206,16 +249,20 @@ def main():
 
     provider = (os.environ.get("LLM_PROVIDER") or "").strip().lower()
     if provider == "ollama":
-        # Local provider, no external key required
         pass
-    else:
-        # Default / gemini provider path
-        if not os.environ.get("GEMINI_API_KEY"):
-            print(
-                "Error: GEMINI_API_KEY required (or set LLM_PROVIDER=ollama for local Ollama).",
-                file=sys.stderr,
-            )
-            sys.exit(1)
+    elif provider == "anthropic" and not os.environ.get("ANTHROPIC_API_KEY"):
+        print("Error: ANTHROPIC_API_KEY required for LLM_PROVIDER=anthropic.", file=sys.stderr)
+        sys.exit(1)
+    elif provider == "gemini" and not os.environ.get("GEMINI_API_KEY"):
+        print("Error: GEMINI_API_KEY required for LLM_PROVIDER=gemini.", file=sys.stderr)
+        sys.exit(1)
+    elif not provider and not (os.environ.get("ANTHROPIC_API_KEY") or os.environ.get("GEMINI_API_KEY")):
+        print(
+            "Error: Set ANTHROPIC_API_KEY or GEMINI_API_KEY "
+            "(or set LLM_PROVIDER=ollama for local Ollama).",
+            file=sys.stderr,
+        )
+        sys.exit(1)
 
     graph = create_graph(args.day, args.date, args.time)
     graph.invoke({"messages": []})
