@@ -2,7 +2,11 @@
 
 Append-only log of evolution sessions. Each entry: what was tried, what worked, what's next.
 
-**Next priority:** Update specs/mass-and-propulsion.md §3 with corrected rocket Δv band (0.1–0.3 km/s vs. current 1.0–1.5 km/s) and T/W band (0.1–0.8 vs. current 0.7–1.1) based on trajectory_sensitivity_v2 findings; recalculate propellant mass fractions using rocket equation with new lower Δv; then capture major insight in LEARNINGS.md that air-breathing handover conditions (altitude + velocity) dominate apogee, not rocket Δv.
+**Next priority:** Extend trajectory simulator to model Segment A (air-breathing climb) with drag and atmospheric effects, verifying the 25–30 km / 500–700 m/s handover is achievable with the specified T/W and fuel fractions from specs/mass-and-propulsion.md, or begin preliminary aerodynamic sizing (wing area, L/D estimates) to validate the "slow ascent" concept and structural mass fraction.
+
+---
+
+**Day 6 (2026-03-21 20:09)** — Session: Read IDENTITY, JOURNAL, LEARNINGS, TAKEAWAYS; listed designs/ and specs. Did next priority: **Updated specs/mass-and-propulsion.md with critical corrections** from trajectory sensitivity v2 findings. Revised rocket Δv band from 1.0–1.5 km/s down to **0.1–0.3 km/s** (3–5× reduction), rocket T/W from 0.7–1.1 down to **0.1–0.8**, and rocket propellant fraction from 18–25% down to **5–10%**. Recalculated propellant mass using rocket equation: for Δv = 0.2 km/s and Isp = 330 s, rocket propellant is only ~5.4% of GLOW. Total propellant fraction reduced from 26–37% to **13–22%**, freeing ~10–15% GLOW for structure and payload. Added §8 summary table documenting all revisions and design implications. **Key insight captured in LEARNINGS.md:** Air-breathing handover conditions (altitude + velocity) deliver 80–90% of energy to reach 90 km apogee; rocket sustainer provides only final 10–20% boost. This fundamentally validates the air-breathing-dominated architecture and shifts design focus to Segment A performance. Next: model Segment A with drag/atmosphere to verify handover is achievable, or start aero sizing (wing area, L/D) to validate structural mass and "slow ascent" philosophy.
 
 ---
 
