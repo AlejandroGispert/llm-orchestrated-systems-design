@@ -1,0 +1,71 @@
+Trajectory Sensitivity Study V2 — Concept V1
+======================================================================
+
+Corrected version exploring lower rocket Δv after V1 overshoot.
+
+PARAMETER RANGES TESTED:
+  Handover altitude: [20, 25, 30] km
+  Handover velocity: [500, 600, 700] m/s
+  Rocket Δv:         [0.1, 0.2, 0.3, 0.5, 0.7, 1.0] km/s
+  Burn time:         [40, 60, 80] s
+  Total cases:       162
+
+RESULTS:
+  Cases passing all gates (TR-1/2/3): 31/162
+  Success rate:                       19.1%
+
+RECOMMENDED NOMINAL CASE (best score among passing):
+  Handover:    30 km, 600 m/s
+  Rocket Δv:   0.20 km/s
+  Burn time:   40 s
+  T/W equiv:   0.51
+  → Apogee:    90.3 km
+  → Max G:     1.51 g
+  → Max q:     9.0 kPa
+
+FAILURE ANALYSIS:
+  TR-1 violations (apogee): 131
+    Range: 60.1–201.0 km
+    Too high (>100 km): 120
+    Too low (<80 km):   11
+  TR-2 violations (G > 5):  0
+  TR-3 violations (q > 60): 0
+
+DESIGN SPACE CHARACTERIZATION (passing cases only):
+
+  Rocket Δv impact on apogee:
+     100 m/s → 88.1 km avg apogee (13 cases)
+     200 m/s → 90.7 km avg apogee (12 cases)
+     300 m/s → 91.1 km avg apogee (6 cases)
+
+  Handover altitude impact:
+    20 km → 88.8 km avg apogee (12 cases)
+    25 km → 91.3 km avg apogee (11 cases)
+    30 km → 88.7 km avg apogee (8 cases)
+
+  Overall statistics (passing cases):
+    Apogee: 80.3–99.3 km (avg 89.7)
+    Max G:  1.17–1.76 g (avg 1.37)
+    Max q:  6.2–27.5 kPa (avg 14.1)
+
+KEY INSIGHTS:
+  1. Rocket Δv requirement is MUCH lower than initially spec'd
+     (0.1–0.5 km/s range vs. original 1.0–1.5 km/s in specs).
+  2. Air-breathing handover conditions dominate final apogee.
+  3. G-loads and dynamic pressure remain well within limits
+     for all tested cases (TR-2/3 not constraining).
+
+RECOMMENDATIONS FOR specs/mass-and-propulsion.md:
+  - Update rocket Δv band: 0.1–0.3 km/s
+    (current spec 1.0–1.5 km/s is too high by factor of ~3)
+  - Rocket T/W equivalent range: 0.13–0.76
+    (current spec 0.7–1.1 may need downward revision)
+
+NEXT STEPS:
+  1. Update specs/mass-and-propulsion.md §3 with corrected Δv/T/W bands.
+  2. Re-evaluate propellant mass fractions using rocket equation with
+     new lower Δv requirements.
+  3. Capture key insight in docs/LEARNINGS.md: air-breathing handover
+     conditions are the primary apogee driver, not rocket Δv.
+  4. Consider adding drag model to trajectory simulator for better
+     fidelity in air-breathing phase.

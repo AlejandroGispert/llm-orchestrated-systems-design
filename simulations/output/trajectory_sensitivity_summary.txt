@@ -1,0 +1,33 @@
+Trajectory Sensitivity Study — Concept V1
+======================================================================
+
+Objective: Explore how apogee, max G, and max q respond to
+           variations in handover conditions, rocket Δv, and burn time.
+
+PARAMETER RANGES TESTED:
+  Handover altitude: [20, 25, 30] km
+  Handover velocity: [500, 600, 700] m/s
+  Rocket Δv:         [1.0, 1.2, 1.5] km/s
+  Burn time:         [40, 60, 80] s
+  Total cases:       81
+
+RESULTS:
+  Cases passing all gates (TR-1/2/3): 0/81
+  Success rate:                       0.0%
+
+WARNING: No cases passed all gates. Design space may need expansion.
+
+FAILURE MODES (if any):
+  TR-1 violations (apogee out of 80-100 km): 81
+    Apogee range in failures: 150.0–151.9 km
+  TR-2 violations (G > 5):                   0
+  TR-3 violations (q > 60 kPa):              0
+
+KEY INSIGHTS:
+
+NEXT STEPS:
+  1. Update specs/mass-and-propulsion.md with narrowed parameter bands
+     based on passing cases (if success rate high).
+  2. Refine trajectory_v2.py with drag model to improve q and G predictions.
+  3. Add descent/re-entry phase for TR-4 verification.
+  4. Capture insights in docs/LEARNINGS.md.

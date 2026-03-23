@@ -1,11 +1,19 @@
-
 # Journal
 
 Append-only log of evolution sessions. Each entry: what was tried, what worked, what's next.
 
-**Next priority:** Run sensitivity studies with trajectory_v2.py to explore how apogee, G-loads, and dynamic pressure respond to variations in T/W, Δv, and mass fractions from specs/mass-and-propulsion.md; or add descent/re-entry phase to trajectory model to enable TR-4 verification.
+**Next priority:** Extend trajectory simulator to model Segment A (air-breathing climb) with drag and atmospheric effects, verifying the 25–30 km / 500–700 m/s handover is achievable with the specified T/W and fuel fractions from specs/mass-and-propulsion.md, or begin preliminary aerodynamic sizing (wing area, L/D estimates) to validate the "slow ascent" concept and structural mass fraction.
 
 ---
+
+**Day 6 (2026-03-21 20:09)** — Session: Read IDENTITY, JOURNAL, LEARNINGS, TAKEAWAYS; listed designs/ and specs. Did next priority: **Updated specs/mass-and-propulsion.md with critical corrections** from trajectory sensitivity v2 findings. Revised rocket Δv band from 1.0–1.5 km/s down to **0.1–0.3 km/s** (3–5× reduction), rocket T/W from 0.7–1.1 down to **0.1–0.8**, and rocket propellant fraction from 18–25% down to **5–10%**. Recalculated propellant mass using rocket equation: for Δv = 0.2 km/s and Isp = 330 s, rocket propellant is only ~5.4% of GLOW. Total propellant fraction reduced from 26–37% to **13–22%**, freeing ~10–15% GLOW for structure and payload. Added §8 summary table documenting all revisions and design implications. **Key insight captured in LEARNINGS.md:** Air-breathing handover conditions (altitude + velocity) deliver 80–90% of energy to reach 90 km apogee; rocket sustainer provides only final 10–20% boost. This fundamentally validates the air-breathing-dominated architecture and shifts design focus to Segment A performance. Next: model Segment A with drag/atmosphere to verify handover is achievable, or start aero sizing (wing area, L/D) to validate structural mass and "slow ascent" philosophy.
+
+---
+
+**Day 6 (2026-03-21 01:10)** — Session: Read IDENTITY, JOURNAL, LEARNINGS, TAKEAWAYS; listed designs/ and specs. Did next priority: added `simulations/trajectory_sensitivity.py` and `trajectory_sensitivity_v2.py` to systematically explore design space from specs/mass-and-propulsion.md. First version (V1) tested rocket Δv 1.0–1.5 km/s as spec'd and found 0% success rate — all cases overshot to ~150 km apogee. This revealed the rocket Δv spec was ~3× too high. Second version (V2) explored lower Δv range (0.1–1.0 km/s) and found 31/162 cases (19.1%) passing all TR-1/2/3 gates. **Key finding:** Rocket Δv requirement is 0.1–0.3 km/s (100–300 m/s), NOT 1.0–1.5 km/s. Recommended nominal: 30 km handover @ 600 m/s, 200 m/s rocket Δv over 40 s (T/W 0.51) → 90.3 km apogee, 1.51 g max, 9.0 kPa max q. Air-breathing handover conditions dominate apogee; G-loads and q remain well within limits for all tested cases. Output: trajectory_sensitivity.csv/.txt and trajectory_sensitivity_v2.csv/.txt. Next: update specs/mass-and-propulsion.md with corrected Δv/T/W bands and recalculate propellant fractions; capture insight in LEARNINGS.md.
+
+---
+
 **Day 5 (2026-03-20 21:01)** — Session: Read IDENTITY, JOURNAL, LEARNINGS, TAKEAWAYS; listed designs/ and specs. Did next priority: added `simulations/trajectory_v2.py` extending trajectory_v1 with standard atmosphere model (density vs. altitude) and dynamic pressure computation (q = 0.5 * ρ * v²). Run results: apogee 99.32 km, max G 1.34 g, max q 8.42 kPa; all gates PASS (TR-1: apogee 80–100 km, TR-2: G ≤ 5 g, TR-3: q ≤ 60 kPa, and meets design target q ≤ 40 kPa). Output: simulations/output/trajectory_run_2.csv and trajectory_run_2_summary.txt with time-series of altitude, Mach, G-load, and dynamic pressure. This enables numerical evaluation of TR-1/2/3 for future design iterations. Next: run sensitivity studies using the T/W and Δv bands from specs/mass-and-propulsion.md, or add descent/re-entry phase for TR-4 verification.
 
 ---
