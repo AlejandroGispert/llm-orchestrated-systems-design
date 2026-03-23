@@ -1,0 +1,52 @@
+======================================================================
+Segment A Trajectory Simulation — Air-Breathing Climb
+======================================================================
+
+Vehicle parameters:
+  GLOW:                10000 kg
+  Air-breathing fuel:  1000 kg (10.0%)
+  T/W (sea level):     0.55
+  T/W (high altitude): 0.30
+  Reference area:      50.0 m²
+  Drag coefficient:    0.040
+  L/D ratio:           8.0
+
+Target handover conditions:
+  Altitude:  25-30 km
+  Velocity:  500-700 m/s
+
+======================================================================
+Simulation Results
+======================================================================
+
+Handover reached:     False
+Termination reason:   Fuel exhausted
+Simulation time:      326.0 s (5.4 min)
+
+Final state:
+  Altitude:           9.37 km
+  Velocity:           194.6 m/s (Mach 0.57)
+  Flight path angle:  -4.8°
+  Mass:               8999 kg
+
+Fuel consumption:
+  Consumed:           1001 kg (10.0% of GLOW)
+  Remaining:          -1 kg
+
+Max values during climb:
+  G-load:             1.00 g
+  Dynamic pressure:   11.21 kPa
+
+======================================================================
+Gate Checks
+======================================================================
+
+  Handover reached:         False
+  Altitude in range:        False
+  Velocity in range:        False
+  G sustained ok (≤4 g):    True
+  G peak ok (≤5 g):         True
+  q ok (≤40 kPa):           True
+
+All gates PASS:             False
+
