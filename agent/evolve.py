@@ -10,6 +10,7 @@ import argparse
 import os
 import subprocess
 import sys
+import time
 from pathlib import Path
 
 from langgraph.graph import StateGraph, END
@@ -160,7 +161,7 @@ def run_bash(command: str) -> str:
 
 
 # ── Graph state ──
-def create_graph(day: int, date: str, time: str) -> StateGraph:
+def create_graph(day: int, date: str, time: str, compact: bool = False) -> StateGraph:
     tools = [read_file, write_file, run_bash]
     model = _get_llm(tools)
 
@@ -176,6 +177,15 @@ def create_graph(day: int, date: str, time: str) -> StateGraph:
             f"- {f.name}" for f in designs_dir.iterdir() if f.is_file()
         ) if designs_dir.exists() else "(empty)"
 
+        # Compact mode is used after API rate-limit responses to reduce prompt size.
+        journal_chars = 1200 if compact else 3000
+        learnings_chars = 800 if compact else 2000
+        takeaways_chars = 1800 if compact else 4000
+
+        journal_snippet = journal[-journal_chars:] if len(journal) > journal_chars else journal
+        learnings_snippet = learnings[-learnings_chars:] if len(learnings) > learnings_chars else learnings
+        takeaways_snippet = takeaways[:takeaways_chars]
+
         return f"""You are an aerospace conceptual design agent. Your goal is to evolve toward flight-ready conceptual designs for reusable orbital access.
 
 Today is Day {day} ({date} {time}).
@@ -184,13 +194,13 @@ Today is Day {day} ({date} {time}).
 {identity}
 
 === JOURNAL (last ~20 lines) ===
-{journal[-3000:] if len(journal) > 3000 else journal}
+{journal_snippet}
 
 === LEARNINGS ===
-{learnings[-2000:] if len(learnings) > 2000 else learnings}
+{learnings_snippet}
 
 === DESIGN BLUEPRINT (TAKEAWAYS.md) ===
-{takeaways[:4000]}...
+{takeaways_snippet}...
 
 === FILES IN designs/ ===
 {designs}
@@ -311,6 +321,35 @@ def main():
                 file=sys.stderr,
             )
             sys.exit(2)
+        if "rate_limit_error" in msg.lower() or "429" in msg.lower():
+            # Retry once with a shorter prompt after a short backoff.
+            wait_s = int(os.environ.get("RATE_LIMIT_RETRY_SECONDS", "20"))
+            print(
+                "Anthropic API rate-limit hit (429). Retrying once with reduced context "
+                f"after {wait_s}s backoff...",
+                file=sys.stderr,
+            )
+            time.sleep(max(1, wait_s))
+            try:
+                compact_graph = create_graph(args.day, args.date, args.time, compact=True)
+                compact_graph.invoke({"messages": []})
+                print("Recovered after rate-limit retry with compact context.", file=sys.stderr)
+                return
+            except Exception as retry_error:
+                retry_msg = str(retry_error)
+                if "rate_limit_error" in retry_msg.lower() or "429" in retry_msg.lower():
+                    print(
+                        "Anthropic API error: still rate-limited after compact retry.\n"
+                        "Fix options:\n"
+                        "- Wait 30-90s and retry\n"
+                        "- Set LLM_PROVIDER=gemini or LLM_PROVIDER=ollama to avoid Anthropic TPM caps\n"
+                        "- Reduce prompt footprint in docs/TAKEAWAYS.md and docs/JOURNAL.md\n"
+                        "- Request higher org limits from Anthropic",
+                        file=sys.stderr,
+                    )
+                    sys.exit(2)
+                print(f"Agent runtime error after rate-limit retry: {retry_msg}", file=sys.stderr)
+                raise
 
         # Unknown runtime error: keep details for debugging.
         print(f"Agent runtime error: {msg}", file=sys.stderr)
